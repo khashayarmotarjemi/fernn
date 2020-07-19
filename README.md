@@ -1,2 +1,2 @@
 # fernn
-My website made with express and nodejs.
+My website made with node and express.
