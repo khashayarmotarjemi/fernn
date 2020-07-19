@@ -1,56 +1,49 @@
 // Setup
 import express = require('express');
-var app = express();
+
 import bodyParser = require('body-parser')
+import ejs = require('ejs');
+
+import {PostsRepo, MulterFile ,upload} from './posts_repo'
+
+
+var app = express();
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-import ejs = require('ejs');
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
-// posts = [];
 
+
+const postsRepo = new PostsRepo();
 
 // Routes
-app.get("/", (req, res) => {
-    getAllPosts().then(posts => {
+app.get("/", (req: express.Request, res: express.Response) => {
+    postsRepo.getAllPosts().then(posts => {
         res.render('index', { posts: posts });
     }).catch(err => {
         res.status(400).send("Unable to save data");
     });
 });
 
-app.post('/addpost', (req, res) => {
-    addPost(req.body).then(result => {
-        res.redirect('/');
-    }).catch(err => {
-        console.log(err);
-        res.status(400).send("Unable to save data");
+app.post('/addpost', upload.single("file"),
+    (req: express.Request & { file: MulterFile }, res: express.Response) => {
+        postsRepo.addPost(req).then(result => {
+            res.redirect('/');
+        }).catch(err => {
+            console.log(err);
+            res.status(400).send("Unable to save data");
+        });
+
     });
-});
 
 
-import fs = require('fs');
 
-const { promisify } = require('util');
-const { json } = require('body-parser');
-
-const readdir = promisify(require('fs').readdir)
-
-async function addPost(post) {
-    fs.writeFile(`./data/posts/${Date.now()}`, JSON.stringify(post), function (err) {
-        if (err) return console.log(err);
-    });
-}
+// controllers
 
 
-async function getAllPosts() {
-    let files = await readdir(__dirname + "/../data/posts/");
-    let data = files.map((file) => JSON.parse(fs.readFileSync(__dirname + '/../data/posts/' + file).toString()))
-    return data;
-}
 
 // Listen
-app.listen(3000, () => {
+app.listen(4000, () => {
     console.log('Server listing on 3000');
 })

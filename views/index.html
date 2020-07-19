@@ -8,10 +8,16 @@
                 <p><%- posts[i].content %></p>
             </article>
         <% } %>
-        <form action="addPost" method="post">
+        <form action="addPost" method="post"  enctype="multipart/form-data">
             <textarea name="title"></textarea><br>
             <textarea name="content"></textarea>
+            <input type="file" name="file">
             <input type="submit" value="Add Post" />
         </form>
+
+        <!-- <form method="post" enctype="multipart/form-data" action="/upload">
+            <input type="file" name="file">
+            <input type="submit" value="Submit">
+        </form> -->
     </body>
 </html>
