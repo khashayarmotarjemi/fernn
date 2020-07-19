@@ -1,7 +1,7 @@
 import multer = require('multer');
 import path = require('path');
 import fs = require('fs');
-import { Post } from './models'
+import { Post } from '../domain/models'
 import express = require('express');
 
 
@@ -14,7 +14,7 @@ export class PostsRepo {
     private saveFile(req: express.Request & { file: MulterFile }, fileName: string) {
 
         const tempPath = req.file.path;
-        const targetPath = path.join(__dirname, `./../data/images/${fileName}.png`);
+        const targetPath = path.join(__dirname, `/../../data/images/${fileName}.png`);
 
         if (path.extname(req.file.originalname).toLowerCase() === ".png") {
             fs.rename(tempPath, targetPath, err => {
@@ -36,7 +36,7 @@ export class PostsRepo {
 
         let fileName = Date.now().toString();
 
-        await writeFile(`./data/posts/${fileName}`,
+        await writeFile(__dirname + `/../../data/posts/${fileName}`,
             JSON.stringify(post),
             function (err) {
                 if (err) return err;
@@ -46,8 +46,8 @@ export class PostsRepo {
     }
 
     async getAllPosts(): Promise<Post[]> {
-        let files = await readdir(__dirname + "/../data/posts/");
-        let data = files.map((file: string) => JSON.parse(fs.readFileSync(__dirname + '/../data/posts/' + file).toString()))
+        let files = await readdir(__dirname + "/../../data/posts");
+        let data = files.map((file: string) => JSON.parse(fs.readFileSync(__dirname + '/../../data/posts/' + file).toString()))
         let posts = data.map((post) => new Post(post.title, post.content));
 
         return posts;
@@ -65,5 +65,5 @@ export interface MulterFile {
 }
 
 export const upload = multer({
-    dest: __dirname + "./../data/tmp"
+    dest: __dirname + "/../../data/tmp"
 });
