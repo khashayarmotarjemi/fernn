@@ -17,7 +17,7 @@ tmp
 public/css/main.css
 
 # Saved Data
-data/**/*
+public/posts
 
 # Coverage reports
 coverage

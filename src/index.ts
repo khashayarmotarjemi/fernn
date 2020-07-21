@@ -11,11 +11,13 @@ var app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.engine('html', ejs.renderFile);
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
 
 const postsRepo = new PostsRepo();
 const router = postsRouter(postsRepo);
 app.use('/',router);
+
+app.use( express.static( __dirname + "/../public" ) );
 
 // Listen
 app.listen(4000, () => {
